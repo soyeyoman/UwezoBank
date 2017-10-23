@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXProgressBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane fx:id="pane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
+  stylesheets="@../Main.css">
+   <children>
+       <JFXProgressBar translateY="150" />
+       <ImageView fx:id="logo" fitHeight="200" fitWidth="300">
+           <Image url="@images/logo.png" />
+       </ImageView>
+   </children>
+</StackPane>

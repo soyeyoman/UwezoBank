@@ -1,0 +1,17 @@
+
+#logo{
+    -fx-font-style: italic;
+    -fx-text-fill:#353535;
+    -fx-font-size: 20px;
+}
+#loginbtn{
+    -fx-background-color: #3d91d3;
+}
+
+.sidebtn{
+    -fx-background-color: #3d91d3;
+}
+
+.sidebtn:hover{
+    -fx-background-color: #53d395;
+}
