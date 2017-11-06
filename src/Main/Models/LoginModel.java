@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -54,7 +55,7 @@ public class LoginModel {
 
 
     private boolean adminLogin(String user, String password)  {
-          ResultSet rs = handler.executeQuery("SELECT * FROM admins WHERE user='"+user+"' AND password = '"+password+"'");
+          ResultSet rs = handler.executeQuery("SELECT * FROM admins WHERE user_name='"+user+"' AND password = '"+password+"'");
           try {
               if(rs.next()){
                    getView("admin",user);
@@ -73,7 +74,7 @@ public class LoginModel {
         try {
             if(rs.next()){
                 String userid = rs.getString("id");
-                rs = handler.executeQuery("SELECT * FROM accounts WHERE holder_id ='"+userid+"' AND pin ='"+pin+"'");
+                rs = handler.executeQuery("SELECT * FROM accounts WHERE customer_id ='"+userid+"' AND pin ='"+pin+"'");
                 if(rs.next()){
                     getView("customer",email);
                     return true;
@@ -87,25 +88,37 @@ public class LoginModel {
         return false;
      }
 
-    private void getView(String user,String userDetail) throws IOException {
+    private void getView(String user,String email_user) throws IOException, SQLException {
         String viewpath = "";
         FXMLLoader loader;
         Parent root = null;
         switch (user){
             case "admin":
                 viewpath = "../Admin/adminpanel.fxml";
-                loader = new  FXMLLoader(getClass().getResource(viewpath));
-                 root = loader.load();
+                loader = new  FXMLLoader();
+                loader.setLocation(getClass().getResource(viewpath));
+                root = loader.load();
+                AdminPanelController Acon = loader.getController();
+                Acon.setAdmin(email_user);
+
                 break;
             case "worker":
                 viewpath = "../Employees/employeepage.fxml";
-                loader = new  FXMLLoader(getClass().getResource(viewpath));
-                 root = loader.load();
+                loader = new  FXMLLoader();
+                loader.setLocation(getClass().getResource(viewpath));
+                root = loader.load();
+                EmployeePageController Econ = loader.getController();
+                Econ.setEmployee(email_user);
+
                 break;
             case "customer":
                 viewpath = "../Customers/customerpage.fxml";
-                loader = new  FXMLLoader(getClass().getResource(viewpath));
+                loader = new  FXMLLoader();
+                loader.setLocation(getClass().getResource(viewpath));
                 root = loader.load();
+                CustomerPageController con = loader.getController();
+                 con.setCustomer(email_user);
+
                 break;
 
         }

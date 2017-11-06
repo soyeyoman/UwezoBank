@@ -33,6 +33,7 @@ public class LoginController implements Initializable {
     @FXML JFXPasswordField password;
     @FXML Label error;
     private String user = "customer";
+    LoginModel model = new LoginModel();
     HamburgerBackArrowBasicTransition back;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -97,7 +98,7 @@ public class LoginController implements Initializable {
 
     @FXML void login(){
         error.setText("");
-        LoginModel model = new LoginModel();
+
         boolean log =  model.login(user,password.getText(),email_user.getText(),(Stage)email_user.getScene().getWindow(),pin.getText());
         if(!log){
             error.setText("Wrong Credentials !!");
