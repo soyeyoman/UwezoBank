@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -22,9 +21,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
-    Parent customer;
-    Parent employee;
-    Parent admin;
+
     @FXML JFXDrawer drawer;
     @FXML Label userid;
     @FXML JFXHamburger hamburger;
@@ -38,18 +35,14 @@ public class LoginController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            customer = FXMLLoader.load(getClass().getResource("../Customers/customerpage.fxml"));
-            employee = FXMLLoader.load(getClass().getResource("../Employees/employeepage.fxml"));
-            admin = FXMLLoader.load(getClass().getResource("../Admin/adminpanel.fxml"));
+
 
             VBox sidepane = FXMLLoader.load(getClass().getResource("sidebar.fxml"));
             drawer.setSidePane(sidepane);
              back = new HamburgerBackArrowBasicTransition(hamburger);
             back.setRate(-1);
 
-            hamburger.addEventHandler(MouseEvent.MOUSE_CLICKED, (MouseEvent e) ->{
-                hideDraw(e);
-            });
+            hamburger.addEventHandler(MouseEvent.MOUSE_CLICKED, this::hideDraw);
 
             for(Node node :sidepane.getChildren()){
 
@@ -98,7 +91,7 @@ public class LoginController implements Initializable {
 
     @FXML void login(){
         error.setText("");
-
+        System.out.println(user + " "+password.getText()+" "+email_user.getText()+ " "+pin.getText());
         boolean log =  model.login(user,password.getText(),email_user.getText(),(Stage)email_user.getScene().getWindow(),pin.getText());
         if(!log){
             error.setText("Wrong Credentials !!");

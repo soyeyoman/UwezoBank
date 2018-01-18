@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.Customers.CustomerPageController">
+<AnchorPane prefHeight="500.0" prefWidth="800.0" stylesheets="@../Main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.Customers.CustomerPageController">
    <children>
       <JFXTabPane prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <tabs>
@@ -19,29 +25,38 @@
                                 <content>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <Label layoutX="34.0" layoutY="95.0" prefHeight="17.0" prefWidth="57.0" text="Name :" />
+                                          <Label layoutX="34.0" layoutY="95.0" prefHeight="17.0" prefWidth="57.0" styleClass="label" text="Name :" />
                                           <TextField fx:id="full_name" editable="false" layoutX="120.0" layoutY="91.0" prefHeight="25.0" prefWidth="172.0" />
-                                          <Label layoutX="47.0" layoutY="151.0" prefHeight="17.0" prefWidth="44.0" text="Age :" />
+                                          <Label layoutX="41.0" layoutY="150.0" prefHeight="17.0" prefWidth="44.0" styleClass="label" text="Age :" />
                                           <TextField fx:id="age" editable="false" layoutX="120.0" layoutY="147.0" prefHeight="25.0" prefWidth="176.0" />
                                           <TextField fx:id="email" editable="false" layoutX="120.0" layoutY="195.0" prefHeight="25.0" prefWidth="178.0" />
-                                          <Label layoutX="45.0" layoutY="199.0" prefHeight="17.0" prefWidth="35.0" text="Email :" />
-                                          <Label layoutX="428.0" layoutY="104.0" prefHeight="17.0" prefWidth="48.0" text="City : " />
-                                          <Label layoutX="425.0" layoutY="151.0" prefHeight="17.0" prefWidth="53.0" text="Address :" />
-                                          <Label layoutX="425.0" layoutY="191.0" prefHeight="17.0" prefWidth="101.0" text="Postal Address :" />
+                                          <Label layoutX="42.0" layoutY="201.0" prefHeight="19.0" prefWidth="42.0" styleClass="label" text="Email :" />
+                                          <Label layoutX="428.0" layoutY="104.0" prefHeight="17.0" prefWidth="48.0" styleClass="label" text="City : " />
+                                          <Label layoutX="425.0" layoutY="151.0" prefHeight="19.0" prefWidth="65.0" styleClass="label" text="Address :" />
+                                          <Label layoutX="425.0" layoutY="191.0" prefHeight="17.0" prefWidth="101.0" styleClass="label" text="Postal Address :" />
                                           <TextField fx:id="city" editable="false" layoutX="537.0" layoutY="100.0" prefHeight="25.0" prefWidth="171.0" />
                                           <TextField fx:id="address" editable="false" layoutX="537.0" layoutY="139.0" prefHeight="25.0" prefWidth="171.0" />
                                           <TextField fx:id="postal" editable="false" layoutX="538.0" layoutY="183.0" prefHeight="25.0" prefWidth="169.0" />
-                                          <JFXButton layoutX="254.0" layoutY="343.0" prefHeight="54.0" prefWidth="130.0" styleClass="sidebtn" stylesheets="@../Main.css" text="Edit" />
-                                          <JFXButton layoutX="418.0" layoutY="343.0" prefHeight="54.0" prefWidth="130.0" styleClass="sidebtn" stylesheets="@../Main.css" text="Save" />
+                                          <JFXButton layoutX="254.0" layoutY="343.0" onAction="#edit" prefHeight="54.0" prefWidth="130.0" styleClass="sidebtn" text="Edit" />
+                                          <JFXButton layoutX="418.0" layoutY="343.0" onAction="#savePersonal" prefHeight="54.0" prefWidth="130.0" styleClass="sidebtn" text="Save" />
                                        </children>
                                     </AnchorPane>
                                 </content>
                               </Tab>
-                              <Tab text="Account">
-                                <content>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                </content>
-                              </Tab>
+                               <Tab text="Account">
+                                  <content>
+                                      <AnchorPane layoutX="-303.0" layoutY="-205.0" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                          <children>
+                                              <TextField fx:id="acc_name" editable="false" layoutX="300.0" layoutY="87.0" prefHeight="40.0" prefWidth="219.0" />
+                                              <Label layoutX="158.0" layoutY="99.0" prefHeight="17.0" prefWidth="91.0" styleClass="label" text="Holder name :" />
+                                              <Label layoutX="157.0" layoutY="163.0" prefHeight="17.0" prefWidth="112.0" styleClass="label" text="Account Number :" />
+                                              <TextField fx:id="acc_no" editable="false" layoutX="301.0" layoutY="151.0" prefHeight="40.0" prefWidth="218.0" />
+                                              <Label layoutX="155.0" layoutY="214.0" prefHeight="17.0" prefWidth="96.0" styleClass="label" text="Balance :" />
+                                              <TextField fx:id="balance" editable="false" layoutX="302.0" layoutY="203.0" prefHeight="39.0" prefWidth="216.0" />
+                                          </children>
+                                      </AnchorPane>
+                                  </content>
+                               </Tab>
                            </tabs>
                         </JFXTabPane>
                      </children>
@@ -50,17 +65,41 @@
             </Tab>
             <Tab text="Withdraw Cash">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="widthraw_balance" layoutX="400.0" layoutY="91.0" prefHeight="41.0" prefWidth="134.0" />
+                        <Label layoutX="233.0" layoutY="102.0" styleClass="label" text="Account Balance:" />
+                        <Label layoutX="233.0" layoutY="162.0" prefHeight="26.0" prefWidth="153.0" styleClass="label" text="Amount To Widthdraw :" />
+                        <TextField fx:id="amount_widthdraw" layoutX="400.0" layoutY="159.0" onKeyReleased="#widthrawAmountEntered" prefHeight="31.0" prefWidth="155.0" />
+                        <Label layoutX="233.0" layoutY="222.0" prefHeight="27.0" prefWidth="122.0" styleClass="label" text="After Widthdraw :" />
+                        <Label fx:id="after_widthdraw" layoutX="406.0" layoutY="217.0" prefHeight="29.0" prefWidth="138.0" />
+                        <JFXButton fx:id="widthdrawbtn" layoutX="338.0" layoutY="333.0" onAction="#widthdraw" prefHeight="59.0" prefWidth="114.0" styleClass="sidebtn" text="WidthDraw" />
+                     </children></AnchorPane>
               </content>
             </Tab>
             <Tab text="Deposit Cash">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="deposit" layoutX="375.0" layoutY="109.0" onKeyReleased="#depositEntered" prefHeight="25.0" prefWidth="175.0" />
+                        <Label layoutX="230.0" layoutY="112.0" prefHeight="19.0" prefWidth="104.0" text="Enter Amount :" />
+                        <JFXButton fx:id="depositbtn" layoutX="374.0" layoutY="246.0" onAction="#deposit" prefHeight="49.0" prefWidth="105.0" styleClass="sidebtn" text="Deposit" />
+                     </children></AnchorPane>
               </content>
             </Tab>
             <Tab text="Cash Transfer">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="158.0" layoutY="103.0" prefHeight="19.0" prefWidth="117.0" text="Account No :" />
+                        <Label layoutX="158.0" layoutY="160.0" prefHeight="19.0" prefWidth="88.0" text="Amount :" />
+                        <Label layoutX="158.0" layoutY="206.0" prefHeight="19.0" prefWidth="98.0" text="Balance After :" />
+                        <JFXButton fx:id="transferbtn" onAction="#transfer" layoutX="331.0" layoutY="308.0" prefHeight="46.0" prefWidth="85.0" styleClass="sidebtn" text="Transfer" />
+                        <Label fx:id="after_transfer" layoutX="304.0" layoutY="198.0" prefHeight="25.0" prefWidth="185.0" />
+                        <Label fx:id="transfer_name" layoutX="549.0" layoutY="104.0" prefHeight="29.0" prefWidth="153.0" />
+                        <TextField fx:id="transfer_account"  onKeyReleased="#accountNameSearch" layoutX="304.0" layoutY="100.0" prefHeight="25.0" prefWidth="183.0" />
+                        <TextField fx:id="transfer_amount" onKeyReleased="#transferAmountEntered" layoutX="304.0" layoutY="148.0" prefHeight="25.0" prefWidth="183.0" />
+                     </children></AnchorPane>
               </content>
             </Tab>
             <Tab text="Change Pin">

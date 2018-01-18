@@ -15,3 +15,10 @@
 .sidebtn:hover{
     -fx-background-color: #53d395;
 }
+
+Label {
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+

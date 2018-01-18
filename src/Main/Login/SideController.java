@@ -18,11 +18,6 @@ import java.util.ResourceBundle;
 public class SideController implements Initializable{
 
 
-    @FXML
-    public void close(ActionEvent ae) {
-        System.exit(0);
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
