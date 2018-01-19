@@ -106,13 +106,14 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <PasswordField fx:id="currentPin" layoutX="422.0" layoutY="106.0" />
+                        <Label fx:id="infoLabel" layoutX="400" layoutY="80" style="-fx-text-fill: red"/>
+                        <PasswordField onKeyReleased="#pinKeyTyped" fx:id="currentPin" layoutX="422.0" layoutY="106.0" />
                         <Label layoutX="239.0" layoutY="104.0" prefHeight="29.0" prefWidth="144.0" text="ENTER CURRENT PIN:" />
                         <Label layoutX="244.0" layoutY="167.0" prefHeight="19.0" prefWidth="134.0" text="NEW PIN :" />
-                        <PasswordField fx:id="newPin" layoutX="422.0" layoutY="164.0" />
-                        <PasswordField fx:id="confirmPin" layoutX="422.0" layoutY="214.0" />
+                        <PasswordField onKeyReleased="#pinKeyTyped" fx:id="newPin" layoutX="422.0" layoutY="164.0" />
+                        <PasswordField onKeyReleased="#pinKeyTyped" fx:id="confirmPin" layoutX="422.0" layoutY="214.0" />
                         <Label layoutX="244.0" layoutY="217.0" text="CONFIRM :" />
-                        <JFXButton fx:id="changePinBtn" layoutX="353.0" layoutY="322.0" prefHeight="48.0" prefWidth="120.0" styleClass="sidebtn" />
+                        <JFXButton fx:id="changePinBtn" text="CHANGE" layoutX="353.0" onAction="#changePin" layoutY="322.0" prefHeight="48.0" prefWidth="120.0" styleClass="sidebtn" />
                      </children></AnchorPane>
               </content>
             </Tab>

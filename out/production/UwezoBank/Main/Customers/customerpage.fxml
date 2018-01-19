@@ -94,17 +94,27 @@
                         <Label layoutX="158.0" layoutY="103.0" prefHeight="19.0" prefWidth="117.0" text="Account No :" />
                         <Label layoutX="158.0" layoutY="160.0" prefHeight="19.0" prefWidth="88.0" text="Amount :" />
                         <Label layoutX="158.0" layoutY="206.0" prefHeight="19.0" prefWidth="98.0" text="Balance After :" />
-                        <JFXButton fx:id="transferbtn" onAction="#transfer" layoutX="331.0" layoutY="308.0" prefHeight="46.0" prefWidth="85.0" styleClass="sidebtn" text="Transfer" />
+                        <JFXButton fx:id="transferbtn" layoutX="331.0" layoutY="308.0" onAction="#transfer" prefHeight="46.0" prefWidth="85.0" styleClass="sidebtn" text="Transfer" />
                         <Label fx:id="after_transfer" layoutX="304.0" layoutY="198.0" prefHeight="25.0" prefWidth="185.0" />
                         <Label fx:id="transfer_name" layoutX="549.0" layoutY="104.0" prefHeight="29.0" prefWidth="153.0" />
-                        <TextField fx:id="transfer_account"  onKeyReleased="#accountNameSearch" layoutX="304.0" layoutY="100.0" prefHeight="25.0" prefWidth="183.0" />
-                        <TextField fx:id="transfer_amount" onKeyReleased="#transferAmountEntered" layoutX="304.0" layoutY="148.0" prefHeight="25.0" prefWidth="183.0" />
+                        <TextField fx:id="transfer_account" layoutX="304.0" layoutY="100.0" onKeyReleased="#accountNameSearch" prefHeight="25.0" prefWidth="183.0" />
+                        <TextField fx:id="transfer_amount" layoutX="304.0" layoutY="148.0" onKeyReleased="#transferAmountEntered" prefHeight="25.0" prefWidth="183.0" />
                      </children></AnchorPane>
               </content>
             </Tab>
             <Tab text="Change Pin">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="infoLabel" layoutX="400" layoutY="80" style="-fx-text-fill: red"/>
+                        <PasswordField onKeyReleased="#pinKeyTyped" fx:id="currentPin" layoutX="422.0" layoutY="106.0" />
+                        <Label layoutX="239.0" layoutY="104.0" prefHeight="29.0" prefWidth="144.0" text="ENTER CURRENT PIN:" />
+                        <Label layoutX="244.0" layoutY="167.0" prefHeight="19.0" prefWidth="134.0" text="NEW PIN :" />
+                        <PasswordField onKeyReleased="#pinKeyTyped" fx:id="newPin" layoutX="422.0" layoutY="164.0" />
+                        <PasswordField onKeyReleased="#pinKeyTyped" fx:id="confirmPin" layoutX="422.0" layoutY="214.0" />
+                        <Label layoutX="244.0" layoutY="217.0" text="CONFIRM :" />
+                        <JFXButton fx:id="changePinBtn" text="CHANGE" layoutX="353.0" onAction="#changePin" layoutY="322.0" prefHeight="48.0" prefWidth="120.0" styleClass="sidebtn" />
+                     </children></AnchorPane>
               </content>
             </Tab>
          </tabs>

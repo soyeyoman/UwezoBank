@@ -25,7 +25,7 @@ public class LoginController implements Initializable {
     @FXML JFXDrawer drawer;
     @FXML Label userid;
     @FXML JFXHamburger hamburger;
-    @FXML JFXTextField pin;
+    @FXML JFXPasswordField pin;
     @FXML JFXTextField email_user;
     @FXML JFXPasswordField password;
     @FXML Label error;

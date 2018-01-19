@@ -2,7 +2,9 @@ package Main.Customers;
 
 
 import Main.Models.Databasehandler;
+import Main.Models.Transaction;
 import Main.Prompts.ConfirmBox;
+import Main.Prompts.Prompt;
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -48,6 +50,7 @@ public class CustomerPageController{
     @FXML PasswordField currentPin;
     @FXML PasswordField newPin;
     @FXML PasswordField confirmPin;
+    @FXML Label infoLabel;
 
     public void setCustomer(String email) throws SQLException {
         ResultSet rs = handler.executeQuery("SELECT * FROM customers WHERE email ='"+email+"'");
@@ -154,6 +157,7 @@ public class CustomerPageController{
                widthraw_balance.setText(accountDetails.getString("balance"));
                after_widthdraw.setText("");
                amount_widthdraw.setText("0");
+               Transaction.createTransaction(accountDetails.getString("number"),"0","W",Double.parseDouble(amount));
            }catch (Exception e){
                System.out.println(e.getMessage());
            }
@@ -177,6 +181,7 @@ public class CustomerPageController{
                     handler.executeAction("UPDATE accounts SET balance = "+amount+" WHERE customer_id ='"+customerId+"'");
                     accountDetails = handler.executeQuery("SELECT * FROM accounts WHERE customer_id='"+customerId+"'");
                     accountDetails.next();
+                    Transaction.createTransaction(accountDetails.getString("number"),"0","D",Double.parseDouble(deposit.getText()));
                     this.balance.setText(accountDetails.getString("balance"));
                     widthraw_balance.setText(accountDetails.getString("balance"));
                     deposit.setText("0");
@@ -230,12 +235,7 @@ public class CustomerPageController{
 
     public void transfer() {
         double value = Double.parseDouble(transfer_amount.getText());
-        Stage win =(Stage) this.balance.getScene().getWindow();
-        double x =  win.xProperty().get();
-        double y =  win.yProperty().get();
-        Vector<Double> pos = new Vector<>();
-        pos.add(x);
-        pos.add(y);
+        Vector<Double> pos = getWindowpos();
         boolean accept = new ConfirmBox().display("Transfer","Transfer  "+value+" to !! "+transfer_name.getText(),pos);
 
         if(accept){
@@ -252,6 +252,7 @@ public class CustomerPageController{
                 rs.next();
                 amount = value + Double.parseDouble(rs.getString("balance"));
                 handler.executeAction("UPDATE accounts SET balance = "+amount+" WHERE number = "+transfer_account.getText());
+                Transaction.createTransaction(accountDetails.getString("number"),rs.getString("number"),"S",value);
 
                 transfer_account.setText("");
                 transfer_amount.setText("");
@@ -294,6 +295,59 @@ public class CustomerPageController{
         }else{
             after_transfer.setText("");
             transferbtn.setDisable(true);
+        }
+    }
+
+    public void changePin() {
+        Prompt prompt = new Prompt();
+        Vector<Double> pos = getWindowpos();
+        if(newPin.getText().equals(confirmPin.getText())){
+            try{
+                if(currentPin.getText().equals(accountDetails.getString("pin"))){
+                   boolean accept =  new ConfirmBox().display("Change pin!!"," CHANGE PIN !!",pos);
+                    if(accept){
+                        handler.executeAction("UPDATE accounts SET pin = "+newPin.getText()+" WHERE number = "+accountDetails.getString("number"));
+                        prompt.display("CHANGED !!","PIN CHANGED !!",false,pos);
+                    }
+                }else{
+                    prompt.display("WRONG PIN!!","CURRENT PIN NOT CORRECT !!",false,pos);
+                }
+
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+
+        }else{
+            prompt.display("NO MATCH !!","New pin does not much confirmation !!",false,pos);
+        }
+    }
+
+    private Vector<Double> getWindowpos() {
+        Stage win =(Stage) this.balance.getScene().getWindow();
+        double x =  win.xProperty().get();
+        double y =  win.yProperty().get();
+        Vector<Double> pos = new Vector<>();
+        pos.add(x);
+        pos.add(y);
+        return pos;
+    }
+
+    public void pinKeyTyped(KeyEvent keyEvent) {
+        infoLabel.setText("");
+        if(keyEvent.getCode().isDigitKey()){
+               PasswordField pass = (PasswordField)keyEvent.getSource();
+               if(pass.getText().length() == 4){
+                   if(!newPin.getText().trim().equals("") && !currentPin.getText().trim().equals("") && !confirmPin.getText().trim().equals("")) {
+                       changePinBtn.setDisable(false);
+                   }
+               }else{
+                   infoLabel.setText("PIN LENGTH SHOULD BE 4 !!");
+                   changePinBtn.setDisable(true);
+               }
+
+        }else{
+            infoLabel.setText("ENTER ONLY DIGITS !!");
+            changePinBtn.setDisable(true);
         }
     }
 }
