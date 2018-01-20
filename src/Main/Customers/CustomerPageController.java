@@ -6,10 +6,12 @@ import Main.Models.Transaction;
 import Main.Prompts.ConfirmBox;
 import Main.Prompts.Prompt;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTabPane;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
@@ -26,6 +28,8 @@ public class CustomerPageController{
     private  Databasehandler handler = Databasehandler.getInstance();
     private ResultSet accountDetails;
 
+    @FXML JFXTabPane customerPage;
+    @FXML JFXTabPane accounts;
     @FXML TextField age;
     @FXML TextField email;
     @FXML TextField full_name;
@@ -158,6 +162,8 @@ public class CustomerPageController{
                after_widthdraw.setText("");
                amount_widthdraw.setText("0");
                Transaction.createTransaction(accountDetails.getString("number"),"0","W",Double.parseDouble(amount));
+               customerPage.getSelectionModel().select(0);
+               accounts.getSelectionModel().select(1);
            }catch (Exception e){
                System.out.println(e.getMessage());
            }
