@@ -21,4 +21,8 @@ Label {
     -fx-font-size: 13px;
 }
 
+Tablecolumn{
+    -fx-font-size: 100pt;
+}
+
 
