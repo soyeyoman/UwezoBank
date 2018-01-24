@@ -10,14 +10,29 @@ public class CustomerData {
     private StringProperty address;
     private StringProperty postalAddress;
     private StringProperty city;
+    private StringProperty id;
 
-    public CustomerData(String name, String email, String age, String address, String postalAddress,String city) {
+    public CustomerData(String name, String email, String age, String address, String postalAddress,String city,String id) {
         this.name = new SimpleStringProperty(name);
+        this.id = new SimpleStringProperty(id);
         this.email = new SimpleStringProperty(email);
         this.age = new SimpleStringProperty(age);
         this.address = new SimpleStringProperty(address);
         this.city= new SimpleStringProperty(city);
         this.postalAddress = new SimpleStringProperty(postalAddress);
+    }
+
+
+    public String getId() {
+        return id.get();
+    }
+
+    public StringProperty idProperty() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id.set(id);
     }
 
     public String getCity() {

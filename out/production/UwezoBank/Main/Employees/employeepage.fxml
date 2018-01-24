@@ -8,7 +8,7 @@
 
 <AnchorPane prefHeight="500.0" prefWidth="800.0" stylesheets="@../Main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.Employees.EmployeePageController">
    <children>
-      <JFXTabPane layoutX="239.0" layoutY="153.0" prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <JFXTabPane fx:id="employeepane" layoutX="239.0" layoutY="153.0" prefHeight="500.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <tabs>
             <Tab text="Add Customer">
               <content>
@@ -28,6 +28,7 @@
                         <TextField fx:id="customerPAD" layoutX="375.0" layoutY="262.0" onKeyReleased="#customerDetails" prefHeight="25.0" prefWidth="168.0" />
                         <JFXButton fx:id="saveCustomer" layoutX="348.0" layoutY="350.0" onAction="#saveCustomer" prefHeight="46.0" prefWidth="83.0" styleClass="sidebtn" text="SAVE" />
                         <Label fx:id="addcustomerwarning" layoutX="299.0" layoutY="35.0" prefHeight="19.0" prefWidth="225.0" style="-fx-text-fill: red;" />
+                        <JFXButton fx:id="setEdit" layoutX="490.0" layoutY="352.0" onAction="#setEdit" prefHeight="42.0" prefWidth="83.0" styleClass="sidebtn" text="EDIT" visible="false" />
                      </children></AnchorPane>
               </content>
             </Tab>
@@ -35,14 +36,15 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="customer_table" prefHeight="471.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="customer_table" prefHeight="471.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                           <columns>
-                            <TableColumn fx:id="full_name" prefWidth="131.0" text="FULL NAME" />
-                            <TableColumn fx:id="age" prefWidth="73.0" text="AGE" />
-                              <TableColumn fx:id="email" prefWidth="181.0" text="EMAIL" />
-                              <TableColumn fx:id="city" prefWidth="116.0" text="CITY" />
-                              <TableColumn  fx:id="address" prefWidth="170.0" text="ADDRESS" />
-                              <TableColumn fx:id="postal_address" prefWidth="128.0" text="POSTAL ADDRESS" />
+                              <TableColumn fx:id="customer_id" prefWidth="63.0" text="ID" />
+                            <TableColumn fx:id="full_name" prefWidth="130.0" text="FULL NAME" />
+                            <TableColumn fx:id="age" prefWidth="67.0" text="AGE" />
+                              <TableColumn fx:id="email" prefWidth="119.0" text="EMAIL" />
+                              <TableColumn fx:id="city" prefWidth="96.0" text="CITY" />
+                              <TableColumn fx:id="address" minWidth="0.0" prefWidth="120.0" text="ADDRESS" />
+                              <TableColumn fx:id="postal_address" prefWidth="279.0" text="POSTAL AD" />
                           </columns>
                         </TableView>
                      </children></AnchorPane>
@@ -59,8 +61,12 @@
                            <center>
                               <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                 <columns>
-                                  <TableColumn prefWidth="75.0" text="C1" />
-                                  <TableColumn prefWidth="75.0" text="C2" />
+                                  <TableColumn prefWidth="132.0" text="CODE" />
+                                  <TableColumn prefWidth="93.0" text="TYPE" />
+                                    <TableColumn minWidth="0.0" prefWidth="124.0" text="FROM" />
+                                    <TableColumn minWidth="0.0" prefWidth="88.0" text="TO" />
+                                    <TableColumn prefWidth="142.0" text="AMOUNT" />
+                                    <TableColumn prefWidth="220.0" text="DATE" />
                                 </columns>
                               </TableView>
                            </center>
