@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import com.jfoenix.controls.*?>
-<?import java.lang.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.control.Label?>
 
 <AnchorPane prefHeight="500.0" prefWidth="800.0" stylesheets="@../Main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.Employees.EmployeePageController">
    <children>
@@ -36,17 +35,42 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="customer_table" prefHeight="471.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                          <columns>
-                              <TableColumn fx:id="customer_id" prefWidth="63.0" text="ID" />
-                            <TableColumn fx:id="full_name" prefWidth="130.0" text="FULL NAME" />
-                            <TableColumn fx:id="age" prefWidth="67.0" text="AGE" />
-                              <TableColumn fx:id="email" prefWidth="119.0" text="EMAIL" />
-                              <TableColumn fx:id="city" prefWidth="96.0" text="CITY" />
-                              <TableColumn fx:id="address" minWidth="0.0" prefWidth="120.0" text="ADDRESS" />
-                              <TableColumn fx:id="postal_address" prefWidth="279.0" text="POSTAL AD" />
-                          </columns>
-                        </TableView>
+                        <BorderPane prefHeight="471.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <center>
+                              <TableView fx:id="customer_table" prefHeight="471.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+                                <columns>
+                                    <TableColumn fx:id="customer_id" prefWidth="75.0" text="ID" />
+                                  <TableColumn fx:id="full_name" prefWidth="124.0" text="FULL NAME" />
+                                  <TableColumn fx:id="age" prefWidth="61.0" text="AGE" />
+                                    <TableColumn fx:id="email" prefWidth="119.0" text="EMAIL" />
+                                    <TableColumn fx:id="city" prefWidth="96.0" text="CITY" />
+                                    <TableColumn fx:id="postal_address" prefWidth="173.0" text="POSTAL AD" />
+                                    <TableColumn fx:id="address" minWidth="0.0" prefWidth="226.0" text="ADDRESS" />
+                                </columns>
+                              </TableView>
+                           </center>
+                           <bottom>
+                              <AnchorPane fx:id="bottomCustomer" prefHeight="99.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <TextField fx:id="id_search" layoutX="15.0" layoutY="26.0" onKeyReleased="#search" prefHeight="25.0" prefWidth="51.0" />
+                                    <TextField fx:id="name_search" layoutX="85.0" layoutY="26.0" onKeyReleased="#search" prefHeight="25.0" prefWidth="121.0" />
+                                    <TextField fx:id="age_search" layoutX="223.0" layoutY="26.0" onKeyReleased="#search" prefHeight="25.0" prefWidth="55.0" />
+                                    <TextField fx:id="email_search" layoutX="297.0" layoutY="25.0" onKeyReleased="#search" prefHeight="25.0" prefWidth="128.0" />
+                                    <TextField fx:id="city_search" layoutX="435.0" layoutY="25.0" onKeyReleased="#search" prefHeight="25.0" prefWidth="100.0" />
+                                    <TextField fx:id="postal_search" layoutX="549.0" layoutY="25.0" onKeyReleased="#search" prefHeight="25.0" prefWidth="118.0" />
+                                    <TextField fx:id="ad_search" layoutX="681.0" layoutY="25.0" onKeyReleased="#search" prefHeight="25.0" prefWidth="109.0" />
+                                    <Label layoutX="26.0" layoutY="7.0" text="ID" />
+                                    <Label layoutX="118.0" layoutY="7.0" text="NAME" />
+                                    <Label layoutX="237.0" layoutY="7.0" text="AGE" />
+                                    <Label layoutX="338.0" layoutY="7.0" prefHeight="19.0" prefWidth="45.0" text="EMAIL" />
+                                    <Label layoutX="471.0" layoutY="7.0" text="CITY" />
+                                    <Label layoutX="583.0" layoutY="7.0" text="POSTAL" />
+                                    <Label layoutX="706.0" layoutY="5.0" text="ADDRESS" />
+                                    <JFXButton layoutX="340.0"  onAction="#clearcustomerSearch" layoutY="60.0" prefHeight="30.0" prefWidth="68.0" styleClass="sidebtn" text="CLEAR" />
+                                 </children>
+                              </AnchorPane>
+                           </bottom>
+                        </BorderPane>
                      </children></AnchorPane>
               </content>
             </Tab>
@@ -59,14 +83,14 @@
                               <AnchorPane prefHeight="91.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
                            </bottom>
                            <center>
-                              <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                              <TableView fx:id="trans" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                 <columns>
-                                  <TableColumn prefWidth="132.0" text="CODE" />
-                                  <TableColumn prefWidth="93.0" text="TYPE" />
-                                    <TableColumn minWidth="0.0" prefWidth="124.0" text="FROM" />
-                                    <TableColumn minWidth="0.0" prefWidth="88.0" text="TO" />
-                                    <TableColumn prefWidth="142.0" text="AMOUNT" />
-                                    <TableColumn prefWidth="220.0" text="DATE" />
+                                    <TableColumn fx:id="trans_code" prefWidth="132.0" text="CODE" />
+                                    <TableColumn fx:id="trans_type" prefWidth="93.0" text="TYPE" />
+                                    <TableColumn fx:id="trans_from" minWidth="0.0" prefWidth="124.0" text="FROM" />
+                                    <TableColumn fx:id="trans_to" minWidth="0.0" prefWidth="88.0" text="TO" />
+                                    <TableColumn fx:id="trans_amount" prefWidth="142.0" text="AMOUNT" />
+                                    <TableColumn fx:id="trans_date" prefWidth="220.0" text="DATE" />
                                 </columns>
                               </TableView>
                            </center>

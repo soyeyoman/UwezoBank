@@ -1,9 +1,6 @@
 package Main.Employees;
 
-import Main.Models.Accounts;
-import Main.Models.CustomerData;
-import Main.Models.Databasehandler;
-import Main.Models.TransactionData;
+import Main.Models.*;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.collections.FXCollections;
@@ -14,6 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+
 import java.sql.ResultSet;
 
 
@@ -38,13 +37,23 @@ public class EmployeePageController {
     @FXML TableColumn<CustomerData,String> address;
     @FXML TableView<CustomerData> customer_table;
     @FXML TableColumn<CustomerData,String> customer_id;
+    @FXML TableColumn<TransactionData,String> trans_code;
+    @FXML TableColumn<TransactionData,String> trans_from;
+    @FXML TableColumn<TransactionData,String> trans_to;
+    @FXML TableColumn<TransactionData,String> trans_date;
+    @FXML TableColumn<TransactionData,String> trans_amount;
+    @FXML TableColumn<TransactionData,String> trans_type;
+    @FXML TableView<TransactionData> trans;
     @FXML JFXTabPane employeepane;
     @FXML JFXButton setEdit;
+    @FXML AnchorPane bottomCustomer;
 
     private String employeeID;
     private Databasehandler databasehandler = Databasehandler.getInstance();
     private ObservableList<CustomerData> customerdata;
     private ObservableList<TransactionData> transactiondata;
+    private Search search = new Search();
+    ObservableList<CustomerData> searchResult;
     private String customerId ="";
     private boolean save = true;
     private boolean edit = false;
@@ -72,7 +81,16 @@ public class EmployeePageController {
             while (rs.next()){
                 transactiondata.add(new TransactionData(rs.getString("code"),rs.getString("recepient_id"),
                         rs.getString("initializer_id")
-                        ,rs.getString("date"),rs.getString("amount"),rs.getString("amount")));
+                        ,rs.getString("time"),rs.getString("amount"),rs.getString("amount").trim()));
+                trans_amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
+                trans_code.setCellValueFactory(new PropertyValueFactory<>("code"));
+                trans_from.setCellValueFactory(new PropertyValueFactory<>("from"));
+                trans_to.setCellValueFactory(new PropertyValueFactory<>("to"));
+                trans_date.setCellValueFactory(new PropertyValueFactory<>("date"));
+                trans_type.setCellValueFactory(new PropertyValueFactory<>("type"));
+                trans.setItems(null);
+                trans.setItems(transactiondata);
+
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
@@ -258,5 +276,31 @@ public class EmployeePageController {
             save = false;
         }
 
+    }
+
+
+    public void search(KeyEvent keyEvent) {
+         TextField source = (TextField) keyEvent.getSource();
+         String key = source.getText();
+
+        if(!key.trim().equals("")){
+            String id = source.getId();
+           searchResult =  search.searchCustomer(customerdata,bottomCustomer);
+        }
+        customer_table.setItems(null);
+        customer_table.setItems(searchResult);
+
+    }
+
+    public void clearcustomerSearch() {
+        searchResult.removeAll();
+        customer_table.setItems(null);
+        customer_table.setItems(customerdata);
+        searchResult.addAll(customerdata);
+        bottomCustomer.getChildren().forEach( child ->{
+            if(child instanceof  TextField){
+                ((TextField) child).setText("");
+            }
+        });
     }
 }
