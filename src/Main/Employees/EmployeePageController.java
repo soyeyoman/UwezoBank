@@ -13,6 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 
+import javax.print.attribute.standard.Chromaticity;
 import java.sql.ResultSet;
 
 
@@ -174,6 +175,11 @@ public class EmployeePageController {
                          +"','"+customerName.getText()+"')");
                  Accounts.createAccount(id,customerName.getText(),customerAge.getText());
 
+                 rs = databasehandler.executeQuery("SELECT id FROM customers WHERE email ='"+email+"'");
+                 rs.next();
+                 customerdata.add(new CustomerData(customerName.getText(),customerEmail.getText(),customerAge.getText(),customerAd.getText(),
+                         customerPAD.getText(),customerCity.getText(),rs.getString("id")));
+
              }catch (Exception e){
                  System.out.println(e.getMessage());
                  System.out.println("save customer!!");
@@ -182,10 +188,17 @@ public class EmployeePageController {
               databasehandler.executeAction("UPDATE customers SET email = '"+customerEmail.getText()+"' WHERE id ="+customerId);
               databasehandler.executeAction("UPDATE customer_info SET city = '"+customerCity.getText()+"', address = '"+customerAd.getText()
                       +"', postal_address ='"+customerPAD.getText()+"' WHERE id = "+customerId);
-              customerId = "";
+              customerdata.forEach( t ->{
+                  if(t.getId().equals(customerId))customerdata.remove(t);
+              });
+
+             customerdata.add(new CustomerData(customerName.getText(),customerEmail.getText(),customerAge.getText(),customerAd.getText(),
+                     customerPAD.getText(),customerCity.getText(),customerId));
+             customerId = "";
               edit = false;
               save = true;
          }
+
         customerName.setText("");
         customerPAD.setText("");
         customerAd.setText("");
@@ -279,14 +292,8 @@ public class EmployeePageController {
     }
 
 
-    public void search(KeyEvent keyEvent) {
-         TextField source = (TextField) keyEvent.getSource();
-         String key = source.getText();
-
-        if(!key.trim().equals("")){
-            String id = source.getId();
-           searchResult =  search.searchCustomer(customerdata,bottomCustomer);
-        }
+    public void search() {
+        searchResult =  search.searchCustomer(customerdata,bottomCustomer);
         customer_table.setItems(null);
         customer_table.setItems(searchResult);
 

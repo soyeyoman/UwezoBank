@@ -2,51 +2,59 @@ package Main.Models;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.layout.AnchorPane;
-
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 
 public class Search {
     private  ObservableList<CustomerData> ansList;
-
+    private boolean add = true;
     public ObservableList<CustomerData> searchCustomer(ObservableList<CustomerData> list, AnchorPane parent){
         ansList = FXCollections.observableArrayList();
 
-        parent.getChildren().forEach( child ->{
-            if(child instanceof TextField){
-                String key = ((TextField) child).getText();
-                switch(child.getId()){
-                    case "id_search":
-                        list.forEach( t->{
-                           add(key,t.getId(),t);
-                        });
-                    case "name_search":
-                        list.forEach( t ->{
-                            add(key,t.getName(),t);
-                        });
-                    case "age_search":
-                        list.forEach( t ->{
-                            add(key,t.getAge(),t);
-                        });
-                     case "email_search":
-                         list.forEach(t ->{
-                              add(key,t.getEmail(),t);
-                         });
-                    case "":
+        list.forEach( t -> {
 
+            parent.getChildren().forEach(text ->{
+
+                if(text instanceof TextField){
+                    String key = ((TextField) text).getText();
+                    if(!key.trim().equals("")){
+                        switch (text.getId()){
+                           case "id_search":
+                               contains(key,t.getId());
+                              break;
+                           case "name_search":
+                                contains(key,t.getName());
+                               break;
+                           case "age_search":
+                               contains(key,t.getAge());
+                               break;
+                           case "city_search":
+                                contains(key,t.getCity());
+                               break;
+                           case "postal_search":
+                               contains(key,t.getPostalAddress());
+                               break;
+                           case "ad_search":
+                                contains(key,t.getName());
+                               break;
+                           case "email_search":
+                                contains(key,t.getEmail());
+                               break;
+
+                       }
+
+                    }
                 }
-            }
+            });
+            if (add)ansList.add(t);
+            add = true;
         });
         return ansList;
     }
 
-    private void add(String key,String value,CustomerData t){
-     if(!ansList.contains(t)){
-         if(value.startsWith(key)){
-             ansList.add(0,t);
-         }else if(value.contains(key)){
-             ansList.add(t);
-         }
-      }
+    private void contains(String key,String value){
+       if(!value.toLowerCase().contains(key.toLowerCase())){
+           add = false;
+       }
     }
 }
