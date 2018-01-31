@@ -1,5 +1,4 @@
 package Main.Models;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TextField;
@@ -35,7 +34,7 @@ public class Search {
                                contains(key,t.getPostalAddress());
                                break;
                            case "ad_search":
-                                contains(key,t.getName());
+                                contains(key,t.getAddress());
                                break;
                            case "email_search":
                                 contains(key,t.getEmail());
