@@ -6,14 +6,18 @@ import com.jfoenix.controls.JFXTabPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-
-import javax.print.attribute.standard.Chromaticity;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import java.io.IOException;
 import java.sql.ResultSet;
 
 
@@ -48,13 +52,16 @@ public class EmployeePageController {
     @FXML JFXTabPane employeepane;
     @FXML JFXButton setEdit;
     @FXML AnchorPane bottomCustomer;
+    @FXML ComboBox<TypeOption> type_choose;
+    @FXML AnchorPane bottomTransaction;
 
     private String employeeID;
     private Databasehandler databasehandler = Databasehandler.getInstance();
     private ObservableList<CustomerData> customerdata;
     private ObservableList<TransactionData> transactiondata;
     private Search search = new Search();
-    ObservableList<CustomerData> searchResult;
+    ObservableList<CustomerData> searchResultCus;
+    ObservableList<TransactionData> searchResultTrans;
     private String customerId ="";
     private boolean save = true;
     private boolean edit = false;
@@ -71,80 +78,135 @@ public class EmployeePageController {
             System.out.println(e.getMessage());
         }
         saveCustomer.setDisable(true);
-
-
+        type_choose.setItems(FXCollections.observableArrayList(TypeOption.values()));
     }
 
-    private void setTransactionsTable() {
-        try{
-            transactiondata = FXCollections.observableArrayList();
-            ResultSet rs = databasehandler.executeQuery("SELECT * FROM transactions");
-            while (rs.next()){
-                transactiondata.add(new TransactionData(rs.getString("code"),rs.getString("recepient_id"),
-                        rs.getString("initializer_id")
-                        ,rs.getString("time"),rs.getString("amount"),rs.getString("amount").trim()));
-                trans_amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
-                trans_code.setCellValueFactory(new PropertyValueFactory<>("code"));
-                trans_from.setCellValueFactory(new PropertyValueFactory<>("from"));
-                trans_to.setCellValueFactory(new PropertyValueFactory<>("to"));
-                trans_date.setCellValueFactory(new PropertyValueFactory<>("date"));
-                trans_type.setCellValueFactory(new PropertyValueFactory<>("type"));
-                trans.setItems(null);
-                trans.setItems(transactiondata);
 
-            }
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+    private void setTransactionsTable() {
+      new Thread(()->{
+          try{
+              transactiondata = FXCollections.observableArrayList();
+              ResultSet rs = databasehandler.executeQuery("SELECT * FROM transactions");
+              while (rs.next()){
+                  ResultSet from = databasehandler.executeQuery("SELECT number FROM accounts WHERE customer_id="+rs.getString("initializer_id"));
+                  from.next();
+
+                  String toNum;
+                  if(!rs.getString("recepient_id").equals("0")){
+                      ResultSet to = databasehandler.executeQuery("SELECT number FROM accounts WHERE customer_id="+rs.getString("recepient_id"));
+                      to.next();
+                      toNum = to.getString("number");
+                  }else{
+                      toNum = "null";
+                  }
+
+
+                  transactiondata.add(new TransactionData(rs.getString("code"),toNum,
+                          from.getString("number")
+                          ,rs.getString("time"),rs.getString("amount"),rs.getString("type").trim()));
+
+                  trans_amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
+                  trans_code.setCellValueFactory(new PropertyValueFactory<>("code"));
+                  trans_from.setCellValueFactory(new PropertyValueFactory<>("from"));
+                  trans_to.setCellValueFactory(new PropertyValueFactory<>("to"));
+                  trans_date.setCellValueFactory(new PropertyValueFactory<>("date"));
+                  trans_type.setCellValueFactory(new PropertyValueFactory<>("type"));
+                  trans.setItems(null);
+                  trans.setItems(transactiondata);
+
+              }
+
+              trans.setRowFactory( rf ->{
+                  TableRow<TransactionData> row = new TableRow<>();
+                  row.setOnMouseClicked( e ->{
+                      if(e.getClickCount() == 2){
+                          try {
+                              TransactionData td = row.getItem();
+                              FXMLLoader loader = new FXMLLoader(getClass().getResource("transactionview.fxml"));
+                              Parent root = loader.load();
+                              TransactionViewController controller = loader.getController();
+                              controller.setTransaction(td,employeeID);
+                              Stage stage = new Stage();
+                              stage.initModality(Modality.APPLICATION_MODAL);
+                              stage.setScene(new Scene(root));
+                              stage.setResizable(false);
+                              stage.showAndWait();
+                          } catch (IOException e1) {
+                              e1.printStackTrace();
+                          }
+
+                      }
+                  });
+                  return row;
+              });
+
+           Thread.sleep(60000);
+          }catch (Exception e){
+              System.out.println(e.getMessage());
+          }
+
+      }).start();
+
+       type_choose.valueProperty().addListener( e->{
+           searchTrans();
+       });
     }
 
     private void setCustomerTable() {
-        try{
-            customerdata = FXCollections.observableArrayList();
-            ResultSet rs = databasehandler.executeQuery("SELECT customer_info.*,customers.email FROM customer_info,customers WHERE customers.id = customer_info.customer_id");
-            while(rs.next()){
-                customerdata.add(new CustomerData(rs.getString("name"),rs.getString("email"),
-                        rs.getString("age"),rs.getString("address"),rs.getString("postal_address"),rs.getString("city"),rs.getString("customer_id")));
-            }
+       new Thread(()->{
+           try{
+               customerdata = FXCollections.observableArrayList();
+               ResultSet rs = databasehandler.executeQuery("SELECT customer_info.*,customers.email FROM customer_info,customers WHERE customers.id = customer_info.customer_id");
+               while(rs.next()){
+                   customerdata.add(new CustomerData(rs.getString("name"),rs.getString("email"),
+                           rs.getString("age"),rs.getString("address"),rs.getString("postal_address"),rs.getString("city"),rs.getString("customer_id")));
+               }
 
-            full_name.setCellValueFactory(new PropertyValueFactory<>("name"));
-            email.setCellValueFactory(new PropertyValueFactory<>("email"));
-            city.setCellValueFactory(new PropertyValueFactory<>("city"));
-            address.setCellValueFactory(new PropertyValueFactory<>("address"));
-            postal_address.setCellValueFactory(new PropertyValueFactory<>("postalAddress"));
-            age.setCellValueFactory(new PropertyValueFactory<>("age"));
-            customer_id.setCellValueFactory(new PropertyValueFactory<>("id"));
-            customer_table.setItems(null);
-            customer_table.setItems(customerdata);
+               full_name.setCellValueFactory(new PropertyValueFactory<>("name"));
+               email.setCellValueFactory(new PropertyValueFactory<>("email"));
+               city.setCellValueFactory(new PropertyValueFactory<>("city"));
+               address.setCellValueFactory(new PropertyValueFactory<>("address"));
+               postal_address.setCellValueFactory(new PropertyValueFactory<>("postalAddress"));
+               age.setCellValueFactory(new PropertyValueFactory<>("age"));
+               customer_id.setCellValueFactory(new PropertyValueFactory<>("id"));
+               customer_table.setItems(null);
+               customer_table.setItems(customerdata);
 
-            customer_table.setRowFactory( tr ->{
-                TableRow<CustomerData> row = new TableRow<>();
-                row.setOnMouseClicked( e ->{
+               customer_table.setRowFactory( tr ->{
+                   TableRow<CustomerData> row = new TableRow<>();
+                   row.setOnMouseClicked( e ->{
 
-                    if(e.getClickCount() == 2 && !row.isEmpty()){
-                         customerName.setText(row.getItem().getName());
-                         customerAge.setText(row.getItem().getAge());
-                         customerEmail.setText(row.getItem().getEmail());
-                         customerAd.setText(row.getItem().getAddress());
-                         customerPAD.setText(row.getItem().getPostalAddress());
-                         customerCity.setText(row.getItem().getCity());
-                         setEnableDisable(false,false);
-                         customerId = row.getItem().getId();
-                         setEdit.setVisible(true);
-                         employeepane.getSelectionModel().select(0);
-                         save = false;
+                       if(e.getClickCount() == 2 && !row.isEmpty()){
+                           customerName.setText(row.getItem().getName());
+                           customerAge.setText(row.getItem().getAge());
+                           customerEmail.setText(row.getItem().getEmail());
+                           customerAd.setText(row.getItem().getAddress());
+                           customerPAD.setText(row.getItem().getPostalAddress());
+                           customerCity.setText(row.getItem().getCity());
+                           setEnableDisable(false,false);
+                           customerId = row.getItem().getId();
+                           setEdit.setVisible(true);
+                           employeepane.getSelectionModel().select(0);
+                           save = false;
 
-                    }
+                       }
 
-                });
-                return row;
-            });
+                   });
+                   return row;
+               });
 
 
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+           }catch (Exception e){
+               System.out.println(e.getMessage());
+           }
 
+
+           try {
+               Thread.sleep(60000);
+           } catch (InterruptedException e) {
+               System.out.println(  e.getMessage());
+           }
+       }).start();
     }
 
      private void setEnableDisable(Boolean set,boolean age){
@@ -211,7 +273,7 @@ public class EmployeePageController {
 
     }
 
-    public void customerDetails(KeyEvent keyEvent) {
+    @FXML void customerDetails(KeyEvent keyEvent) {
         TextField field = (TextField) keyEvent.getSource();
         addcustomerwarning.setText("");
 
@@ -276,7 +338,7 @@ public class EmployeePageController {
     }
 
 
-    public void setEdit() {
+    @FXML void setEdit() {
         if(edit){
             setEnableDisable(false,false);
             edit = false;
@@ -292,19 +354,39 @@ public class EmployeePageController {
     }
 
 
-    public void search() {
-        searchResult =  search.searchCustomer(customerdata,bottomCustomer);
+    @FXML void searchCus() {
+        searchResultCus =  search.searchCustomer(customerdata,bottomCustomer);
         customer_table.setItems(null);
-        customer_table.setItems(searchResult);
+        customer_table.setItems(searchResultCus);
 
     }
 
-    public void clearcustomerSearch() {
-        searchResult.removeAll();
+
+    @FXML void searchTrans() {
+        searchResultTrans =  search.searchTransaction(transactiondata,bottomTransaction);
+        trans.setItems(null);
+        trans.setItems(searchResultTrans);
+
+    }
+
+    @FXML void clearcustomerSearch() {
+        searchResultCus.removeAll();
         customer_table.setItems(null);
         customer_table.setItems(customerdata);
-        searchResult.addAll(customerdata);
+        searchResultCus.addAll(customerdata);
         bottomCustomer.getChildren().forEach( child ->{
+            if(child instanceof  TextField){
+                ((TextField) child).setText("");
+            }
+        });
+    }
+
+    @FXML void cleartransacionSearch(){
+        searchResultTrans.removeAll();
+        trans.setItems(null);
+        trans.setItems(transactiondata);
+        searchResultTrans.addAll(transactiondata);
+        bottomTransaction.getChildren().forEach( child ->{
             if(child instanceof  TextField){
                 ((TextField) child).setText("");
             }
