@@ -2,6 +2,7 @@ package Main.Customers;
 
 
 import Main.Models.Databasehandler;
+import Main.Models.Password;
 import Main.Models.Transaction;
 import Main.Prompts.ConfirmBox;
 import Main.Prompts.Prompt;
@@ -11,11 +12,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -154,14 +153,22 @@ public class CustomerPageController{
 
        if(accept){
            try {
-               handler.executeAction("UPDATE accounts SET balance = " + balance + " WHERE customer_id ='" + customerId + "'");
+
+
+
+               ResultSet res = handler.executeQuery("SELECT balance FROM accounts WHERE customer_id="+customerId);
+               res.next();
+               if(!res.getString("balance").equals("0")){
+                   handler.executeAction("UPDATE accounts SET balance = " + balance + " WHERE customer_id ='" + customerId + "'");
+               }
                accountDetails = handler.executeQuery("SELECT * FROM accounts WHERE customer_id='" + customerId + "'");
                accountDetails.next();
                this.balance.setText(accountDetails.getString("balance"));
                widthraw_balance.setText(accountDetails.getString("balance"));
                after_widthdraw.setText("");
                amount_widthdraw.setText("0");
-               Transaction.createTransaction(accountDetails.getString("number"),"0","W",Double.parseDouble(amount));
+               Transaction.createTransaction(accountDetails.getString("number"),
+                       "0","W",Double.parseDouble(amount));
                customerPage.getSelectionModel().select(0);
                accounts.getSelectionModel().select(1);
            }catch (Exception e){
@@ -183,8 +190,26 @@ public class CustomerPageController{
                 boolean accept = new ConfirmBox().display("Deposit","Deposit "+value+"!! ",pos);
 
                 if(accept){
-                    double amount = value + Double.parseDouble(balance.getText());
-                    handler.executeAction("UPDATE accounts SET balance = "+amount+" WHERE customer_id ='"+customerId+"'");
+                    ResultSet res = handler.executeQuery("SELECT credit FROM accounts WHERE customer_id="+customerId);
+                    res.next();
+                    Double credit = Double.parseDouble(res.getString("credit"));
+                    System.out.println("credit = "+credit);
+                    if(credit == 0){
+                        handler.executeAction("UPDATE accounts SET balance = balance + "+value+" WHERE customer_id ='"+customerId+"'");
+                    }else{
+
+                        if((credit - value) > 0 || (credit-value) == 0){
+                            handler.executeAction("UPDATE accounts SET credit = credit - "+value+" WHERE customer_id ='"+customerId+"'");
+                            System.out.println("credit  1");
+                        }else if((value - credit) > 0){
+                            System.out.println("credit 2");
+                            double balance = value - credit;
+                            handler.executeAction("UPDATE accounts SET credit = 0 WHERE customer_id ='"+customerId+"'");
+                            handler.executeAction("UPDATE accounts SET balance = balance + "+balance+" WHERE customer_id ='"+customerId+"'");
+                        }
+
+                    }
+
                     accountDetails = handler.executeQuery("SELECT * FROM accounts WHERE customer_id='"+customerId+"'");
                     accountDetails.next();
                     Transaction.createTransaction(accountDetails.getString("number"),"0","D",Double.parseDouble(deposit.getText()));
@@ -215,8 +240,8 @@ public class CustomerPageController{
 
     public void accountNameSearch() {
 
-        String account_no = transfer_account.getText();
-        if(!account_no.trim().equals("") && account_no.length()>6 && !account_no.equals(acc_no.getText())){
+        String account_no = transfer_account.getText().trim();
+        if(account_no.length()>6 && !account_no.equals(acc_no.getText())){
             char val = account_no.charAt(account_no.length()-1);
                 if(Character.isDigit(val)){
                     try{
@@ -235,6 +260,7 @@ public class CustomerPageController{
                     }
                 }
         }else{
+            transfer_name.setText("");
             transferbtn.setDisable(true);
         }
     }
@@ -256,8 +282,21 @@ public class CustomerPageController{
 
                 ResultSet rs = handler.executeQuery("SELECT * FROM accounts WHERE number = "+transfer_account.getText());
                 rs.next();
-                amount = value + Double.parseDouble(rs.getString("balance"));
-                handler.executeAction("UPDATE accounts SET balance = "+amount+" WHERE number = "+transfer_account.getText());
+
+                Double credit = Double.parseDouble(rs.getString("credit"));
+                if(credit == 0){
+                    handler.executeAction("UPDATE accounts SET balance = balance + "+value+" WHERE number = "+transfer_account.getText());
+                }else{
+                    if((credit - value) == 0 || (credit - amount) > 0 ){
+                        handler.executeAction("UPDATE accounts SET credit = credit - "+value+" WHERE number =" +transfer_account.getText());
+                    }else if(value-credit > 0){
+                        double balance = value - credit;
+                        handler.executeAction("UPDATE accounts SET credit = 0 WHERE number ="+transfer_account.getText());
+                        handler.executeAction("UPDATE accounts SET balance = balance + "+balance+" WHERE number ="+transfer_account.getText());
+                    }
+                }
+
+
                 Transaction.createTransaction(accountDetails.getString("number"),rs.getString("number"),"S",value);
 
                 transfer_account.setText("");
@@ -309,11 +348,14 @@ public class CustomerPageController{
         Vector<Double> pos = getWindowpos();
         if(newPin.getText().equals(confirmPin.getText())){
             try{
-                if(currentPin.getText().equals(accountDetails.getString("pin"))){
+                if(Password.hash(currentPin.getText().trim()).equals(accountDetails.getString("pin"))){
                    boolean accept =  new ConfirmBox().display("Change pin!!"," CHANGE PIN !!",pos);
                     if(accept){
-                        handler.executeAction("UPDATE accounts SET pin = "+newPin.getText()+" WHERE number = "+accountDetails.getString("number"));
+                        handler.executeAction("UPDATE accounts SET pin = '"+Password.hash(newPin.getText())+"' WHERE number = "+accountDetails.getString("number"));
                         prompt.display("CHANGED !!","PIN CHANGED !!",false,pos);
+                        newPin.setText("");
+                        confirmPin.setText("");
+                        currentPin.setText("");
                     }
                 }else{
                     prompt.display("WRONG PIN!!","CURRENT PIN NOT CORRECT !!",false,pos);

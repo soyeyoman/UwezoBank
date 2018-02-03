@@ -28,12 +28,10 @@ public class Accounts {
 
          Random gen = new Random();
          int num1 = gen.nextInt(9);
-         int num2 = gen.nextInt(9);
-         int num3 = gen.nextInt(9);
+
 
          sb.append(num1);
-         sb.append(num2);
-         sb.append(num3);
+
 
          try{
              ResultSet rs = databasehandler.executeQuery("SELECT * FROM accounts WHERE number = "+sb.toString());

@@ -39,7 +39,7 @@ public class LoginModel {
     }
 
     private boolean workerLogin(String email, String password) {
-        ResultSet rs = handler.executeQuery("SELECT * FROM workers WHERE email ='"+email+"' AND password ='"+password+"'");
+        ResultSet rs = handler.executeQuery("SELECT * FROM workers WHERE email ='"+email+"' AND password ='"+Password.hash(password)+"'");
         try {
             if(rs.next()){
                 getView("worker",email);
@@ -55,7 +55,7 @@ public class LoginModel {
 
 
     private boolean adminLogin(String user, String password)  {
-          ResultSet rs = handler.executeQuery("SELECT * FROM admins WHERE user_name='"+user+"' AND password = '"+password+"'");
+          ResultSet rs = handler.executeQuery("SELECT * FROM admins WHERE user_name='"+user+"' AND password = '"+Password.hash(password)+"'");
           try {
               if(rs.next()){
                    getView("admin",user);
@@ -70,11 +70,11 @@ public class LoginModel {
     }
 
     private boolean customerLogin(String email, String password,String pin) {
-        ResultSet rs = handler.executeQuery("SELECT * FROM customers WHERE email ='"+email+"' AND password = '"+password+"'");
+        ResultSet rs = handler.executeQuery("SELECT * FROM customers WHERE email ='"+email+"' AND password = '"+Password.hash(password)+"'");
         try {
             if(rs.next()){
                 String userid = rs.getString("id");
-                rs = handler.executeQuery("SELECT * FROM accounts WHERE customer_id ='"+userid+"' AND pin ='"+pin+"'");
+                rs = handler.executeQuery("SELECT * FROM accounts WHERE customer_id ='"+userid+"' AND pin ='"+Password.hash(pin)+"'");
                 if(rs.next()){
                     getView("customer",email);
                     return true;

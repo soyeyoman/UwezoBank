@@ -77,13 +77,27 @@ import java.sql.SQLException;
 
                 @FXML
                 void reverse() {
-                    Databasehandler databasehandler = Databasehandler.getInstance();
-                    databasehandler.executeAction("DELETE  FROM transactions WHERE code='"+code.getText()+"'");
-                    databasehandler.executeAction("INSERT INTO `reversed` (`code`, `employee_id`, `amount`, `transaction_time`, `from_account`,`to_account`) VALUES ( '"+code.getText()+"', '"+employeeId
-                            +"', '"+amount.getText()+"', '"+date.getText()+"', '"+acc_no.getText()+"','"+to_no.getText()+"')");
-                   databasehandler.executeAction("UPDATE accounts SET balance = balance + "+amount.getText()+" WHERE number="+acc_no.getText());
-                    databasehandler.executeAction("UPDATE accounts SET balance = balance - "+amount.getText()+" WHERE number="+to_no.getText());
-                    ((Stage)code.getScene().getWindow()).close();
+                    try {
+                        Databasehandler databasehandler = Databasehandler.getInstance();
+                        databasehandler.executeAction("DELETE  FROM transactions WHERE code='" + code.getText() + "'");
+                        databasehandler.executeAction("INSERT INTO `reversed` (`code`, `employee_id`, `amount`, `transaction_time`, `from_account`,`to_account`) VALUES ( '" + code.getText() + "', '" + employeeId
+                                + "', '" + amount.getText() + "', '" + date.getText() + "', '" + acc_no.getText() + "','" + to_no.getText() + "')");
+                        databasehandler.executeAction("UPDATE accounts SET balance = balance + " + amount.getText() + " WHERE number=" + acc_no.getText());
+
+                        ResultSet balanceRes = databasehandler.executeQuery("SELECT balance FROM accounts WHERE number=" + to_no.getText());
+                        balanceRes.next();
+                        String balance = balanceRes.getString("balance");
+
+                        if(!balance.equals("0")){
+                            databasehandler.executeAction("UPDATE accounts SET balance = balance - " + amount.getText() + " WHERE number=" + to_no.getText());
+                        }else{
+                            databasehandler.executeAction("UPDATE accounts SET credit=" + amount.getText() + " WHERE number=" + to_no.getText());
+                        }
+
+                        ((Stage) code.getScene().getWindow()).close();
+                    }catch (Exception e){
+                        System.out.println(e.getMessage());
+                    }
                 }
 
             }

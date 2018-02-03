@@ -1,10 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Label?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="Main.Admin.AdminPanelController"
-            prefHeight="500" prefWidth="800">
-<Label>ADMIN ADMIN ADMIN</Label>
+<AnchorPane minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" stylesheets="@../Main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Main.Admin.AdminPanelController">
+   <children>
+   <JFXTabPane fx:id="adminpane" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+       <tabs>
+           <Tab text="Add Employee">
+               <content>
+                   <AnchorPane prefHeight="400" prefWidth="600">
+                       <children>
+                           <Label layoutX="198.0" layoutY="73.0" text="FULL NAME :" />
+                           <Label layoutX="201.0" layoutY="147.0" prefHeight="19.0" prefWidth="63.0" text="EMAIL :" />
+                           <Label layoutX="200.0" layoutY="185.0" prefHeight="19.0" prefWidth="49.0" text="CITY :" />
+                           <Label layoutX="200.0" layoutY="110.0" prefHeight="19.0" prefWidth="39.0" text="AGE :" />
+                           <Label layoutX="199.0" layoutY="217.0" text="ADDRESS :" />
+                           <Label layoutX="200.0" layoutY="256.0" text="POSTAL ADDRESS:" />
+                           <TextField fx:id="name" layoutX="355.0" layoutY="70.0" onKeyReleased="#employeeDetails" prefHeight="25.0" prefWidth="168.0" />
+                           <TextField fx:id="age" layoutX="356.0" layoutY="107.0" onKeyReleased="#employeeDetails" prefHeight="25.0" prefWidth="167.0" />
+                           <TextField fx:id="email" layoutX="357.0" layoutY="144.0" onKeyReleased="#employeeDetails" prefHeight="25.0" prefWidth="166.0" />
+                           <TextField fx:id="city" layoutX="356.0" layoutY="182.0" onKeyReleased="#employeeDetails" prefHeight="25.0" prefWidth="169.0" />
+                           <TextField fx:id="address" layoutX="357.0" layoutY="214.0" onKeyReleased="#employeeDetails" prefHeight="25.0" prefWidth="168.0" />
+                           <TextField fx:id="p_address" layoutX="355.0" layoutY="253.0" onKeyReleased="#employeeDetails" prefHeight="25.0" prefWidth="168.0" />
+                           <JFXButton fx:id="saveEmployee" layoutX="251.0" layoutY="307.0" onAction="#saveEmployee" prefHeight="46.0" prefWidth="83.0" styleClass="sidebtn" text="SAVE" />
+                           <Label fx:id="addwarning" layoutX="200.0" layoutY="29.0" prefHeight="28.0" prefWidth="239.0" style="-fx-text-fill: red;" />
+                           <JFXButton fx:id="setEdit" layoutX="390.0" layoutY="310.0" onAction="#setEdit" prefHeight="39.0" prefWidth="79.0" styleClass="sidebtn" text="EDIT" visible="false" />
+                       </children>
+                   </AnchorPane>
+               </content>
+           </Tab>
+            <Tab text="Employees">
+              <content>
+                <BorderPane>
+                     <center>
+                        <TableView fx:id="employee_table" prefHeight="371.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                          <columns>
+                            <TableColumn fx:id="table_id" prefWidth="75.0" text="ID" />
+                            <TableColumn fx:id="table_name" prefWidth="75.0" text="NAME" />
+                              <TableColumn fx:id="table_age" prefWidth="75.0" text="AGE" />
+                              <TableColumn fx:id="table_email" prefWidth="75.0" text="EMAIL" />
+                              <TableColumn fx:id="table_city" prefWidth="75.0" text="CITY" />
+                              <TableColumn fx:id="table_address" prefWidth="75.0" text="ADDRESS" />
+                              <TableColumn fx:id="table_postal_address" prefWidth="149.0" text="POSTAL ADDRESS" />
+                          </columns>
+                        </TableView>
+                     </center>
+                     <bottom>
+                         <AnchorPane fx:id="bottomEmployee" prefHeight="90.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                             <children>
+                                 <TextField fx:id="id_search" layoutX="15.0" layoutY="26.0" onKeyReleased="#searchEmp" prefHeight="25.0" prefWidth="51.0" />
+                                 <TextField fx:id="name_search" layoutX="85.0" layoutY="26.0"  onKeyReleased="#searchEmp"   prefHeight="25.0" prefWidth="121.0" />
+                                 <TextField fx:id="age_search" layoutX="223.0" layoutY="26.0"  onKeyReleased="#searchEmp"  prefHeight="25.0" prefWidth="55.0" />
+                                 <TextField fx:id="email_search" layoutX="297.0" layoutY="25.0"  onKeyReleased="#searchEmp"   prefHeight="25.0" prefWidth="128.0" />
+                                 <TextField fx:id="city_search" layoutX="435.0" layoutY="25.0"  onKeyReleased="#searchEmp"  prefHeight="25.0" prefWidth="100.0" />
+                                 <TextField fx:id="postal_search" layoutX="549.0" layoutY="25.0"  onKeyReleased="#searchEmp"  prefHeight="25.0" prefWidth="118.0" />
+                                 <TextField fx:id="ad_search" layoutX="681.0" layoutY="25.0"  onKeyReleased="#searchEmp"   prefHeight="25.0" prefWidth="109.0" />
+                                 <Label layoutX="26.0" layoutY="7.0" text="ID" />
+                                 <Label layoutX="118.0" layoutY="7.0" text="NAME" />
+                                 <Label layoutX="237.0" layoutY="7.0" text="AGE" />
+                                 <Label layoutX="338.0" layoutY="7.0" prefHeight="19.0" prefWidth="45.0" text="EMAIL" />
+                                 <Label layoutX="471.0" layoutY="7.0" text="CITY" />
+                                 <Label layoutX="583.0" layoutY="7.0" text="POSTAL" />
+                                 <Label layoutX="706.0" layoutY="5.0" text="ADDRESS" />
+                                 <JFXButton layoutX="340.0" layoutY="60.0" onAction="#clearSearch" prefHeight="30.0" prefWidth="68.0" styleClass="sidebtn" text="CLEAR" />
+                             </children>
+                         </AnchorPane>
+
+                     </bottom></BorderPane>
+              </content>
+            </Tab>
+       </tabs>
+   </JFXTabPane>
+   </children>
 </AnchorPane>

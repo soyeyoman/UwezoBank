@@ -8,6 +8,7 @@ import javafx.scene.layout.AnchorPane;
 public class Search {
     private  ObservableList<CustomerData> ansListCus;
     private ObservableList<TransactionData> ansListtrans;
+    private ObservableList<EmployeeData> ansListEmp;
     private boolean add = true;
     public ObservableList<CustomerData> searchCustomer(ObservableList<CustomerData> list, AnchorPane parent){
         ansListCus = FXCollections.observableArrayList();
@@ -97,5 +98,49 @@ public class Search {
             add = true;
         });
         return ansListtrans;
+    }
+
+    public ObservableList<EmployeeData> searchEmployee(ObservableList<EmployeeData> employeeData, AnchorPane parent) {
+        ansListEmp = FXCollections.observableArrayList();
+
+        employeeData.forEach( t -> {
+
+            parent.getChildren().forEach(text ->{
+
+                if(text instanceof TextField){
+                    String key = ((TextField) text).getText();
+                    if(!key.trim().equals("")){
+                        switch (text.getId()){
+                            case "id_search":
+                                contains(key,t.getId());
+                                break;
+                            case "name_search":
+                                contains(key,t.getName());
+                                break;
+                            case "age_search":
+                                contains(key,t.getAge());
+                                break;
+                            case "city_search":
+                                contains(key,t.getCity());
+                                break;
+                            case "postal_search":
+                                contains(key,t.getP_address());
+                                break;
+                            case "ad_search":
+                                contains(key,t.getAddress());
+                                break;
+                            case "email_search":
+                                contains(key,t.getEmail());
+                                break;
+
+                        }
+
+                    }
+                }
+            });
+            if (add)ansListEmp.add(t);
+            add = true;
+        });
+        return ansListEmp;
     }
 }

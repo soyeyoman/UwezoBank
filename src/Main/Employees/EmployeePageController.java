@@ -1,10 +1,12 @@
 package Main.Employees;
 
 import Main.Models.*;
+import Main.Prompts.ConfirmBox;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTabPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.ResultSet;
-
+import java.util.Vector;
 
 
 /**
@@ -54,6 +56,11 @@ public class EmployeePageController {
     @FXML AnchorPane bottomCustomer;
     @FXML ComboBox<TypeOption> type_choose;
     @FXML AnchorPane bottomTransaction;
+    @FXML TextField oldpass;
+    @FXML TextField newpass;
+    @FXML TextField confirmpass;
+    @FXML Label  change_info;
+    @FXML JFXButton changeBtn;
 
     private String employeeID;
     private Databasehandler databasehandler = Databasehandler.getInstance();
@@ -202,7 +209,7 @@ public class EmployeePageController {
 
 
            try {
-               Thread.sleep(60000);
+               Thread.sleep(6000);
            } catch (InterruptedException e) {
                System.out.println(  e.getMessage());
            }
@@ -228,7 +235,8 @@ public class EmployeePageController {
          if(save ){
              try{
 
-                 databasehandler.executeAction("INSERT INTO customers(email,password) VALUES('"+customerEmail.getText()+"','password')");
+                 databasehandler.executeAction("INSERT INTO customers(email,password,pin) VALUES('"+customerEmail.getText()+"','"+
+                         Password.hash("password")+"','"+Password.hash("1234")+"')");
                  ResultSet rs = databasehandler.executeQuery("SELECT id FROM customers WHERE email = '"+customerEmail.getText()+"'");
                  rs.next();
                  String id = rs.getString("id");
@@ -237,14 +245,13 @@ public class EmployeePageController {
                          +"','"+customerName.getText()+"')");
                  Accounts.createAccount(id,customerName.getText(),customerAge.getText());
 
-                 rs = databasehandler.executeQuery("SELECT id FROM customers WHERE email ='"+email+"'");
+                 rs = databasehandler.executeQuery("SELECT id FROM customers WHERE email ='"+customerEmail.getText()+"'");
                  rs.next();
                  customerdata.add(new CustomerData(customerName.getText(),customerEmail.getText(),customerAge.getText(),customerAd.getText(),
                          customerPAD.getText(),customerCity.getText(),rs.getString("id")));
 
              }catch (Exception e){
                  System.out.println(e.getMessage());
-                 System.out.println("save customer!!");
              }
          }else{
               databasehandler.executeAction("UPDATE customers SET email = '"+customerEmail.getText()+"' WHERE id ="+customerId);
@@ -257,10 +264,12 @@ public class EmployeePageController {
              customerdata.add(new CustomerData(customerName.getText(),customerEmail.getText(),customerAge.getText(),customerAd.getText(),
                      customerPAD.getText(),customerCity.getText(),customerId));
              customerId = "";
+
               edit = false;
               save = true;
          }
-
+        customer_table.setItems(null);
+        customer_table.setItems(customerdata);
         customerName.setText("");
         customerPAD.setText("");
         customerAd.setText("");
@@ -391,5 +400,57 @@ public class EmployeePageController {
                 ((TextField) child).setText("");
             }
         });
+    }
+
+    public void changePassKeyEntered(KeyEvent event) {
+        if(event.getSource().equals(newpass) || event.getSource().equals(confirmpass)){
+            if(!newpass.getText().equals(confirmpass.getText())){
+                change_info.setText("New password does not match confirmation !!");
+                changeBtn.setDisable(true);
+            }else{
+                change_info.setText("");
+                if(!oldpass.getText().trim().equals("") && !oldpass.getText().trim().equals("") && !oldpass.getText().trim().equals("")){
+                    changeBtn.setDisable(false);
+                }else{
+                    change_info.setText("Fill in all fields !!");
+                    changeBtn.setDisable(false);
+                }
+            }
+        }else{
+            if(!oldpass.getText().trim().equals("") && !oldpass.getText().trim().equals("") && !oldpass.getText().trim().equals("")){
+              changeBtn.setDisable(false);
+            }else{
+                change_info.setText("Fill in all fields !!");
+                changeBtn.setDisable(true);
+            }
+        }
+
+    }
+
+    public void changePassword() {
+        double x = oldpass.getScene().getWindow().getX();
+        double y = oldpass.getScene().getWindow().getY();
+        Vector<Double> pos = new Vector<>();
+        pos.add(x);
+        pos.add(y);
+        try{
+            ResultSet rs = databasehandler.executeQuery("SELECT password FROM workers WHERE id = "+employeeID);
+            rs.next();
+            String olpass = Password.hash(oldpass.getText().trim());
+            if(olpass.equals(rs.getString("password"))){
+                boolean accept =  new ConfirmBox().display("Change pin!!"," CHANGE PIN !!",pos);
+                if(accept){
+                    databasehandler.executeAction("UPDATE workers SET password ='"+Password.hash(newpass.getText())+"'");
+                    oldpass.setText("");
+                    newpass.setText("");
+                    confirmpass.setText("");
+                    changeBtn.setDisable(true);
+                }
+
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
     }
 }
